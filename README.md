@@ -284,8 +284,50 @@ export LOGNAME='$(getflag)'
 ```
 apres je lance le script
 
+flag: fiumuikeil55xe9cu4dood66h
+
+
 -----
 level 08
+
+scp -P 4242 level08@10.11.248.91:/home/user/level08/level08 ~/Desktop/
+
+dogbolt
+
+```c
+if (argc == 1) {
+    printf("%s [file to read]\n", *argv);
+    exit(1);
+}
+```
+
+Si tu ne donnes pas de fichier en argument, il affiche la syntaxe et quitte.
+
+```c
+if (strstr(argv[1], "token")) {
+    printf("You may not access '%s'\n", argv[1]);
+    exit(1);
+}
+```
+il cherche la chaîne "token" dans l’argument, et refuse l’accès si elle est trouvée.
+
+```c
+ln -s /home/user/level08/token /tmp/maflag
+Créer un lien symbolique pointant vers le fichier protégé (token).
+```
+
+```c
+./level08 /tmp/maflag
+```
+
+su flag08 puis getflag
+
+level09
+
+
+
+
+
 
 
 
