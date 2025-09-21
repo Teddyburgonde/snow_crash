@@ -1,0 +1,36 @@
+Definition:
+
+Un fichier .pcap est une capture réseau (Packet CAPture).  
+On peut l’ouvrir avec Wireshark pour analyser le trafic réseau enregistré.
+
+Piste:
+Lister les fichiers dans le répertoire home :
+
+$ ls
+
+→ On voit level02.pcap
+
+Outil:
+Transférer le fichier en local pour l’ouvrir avec Wireshark :
+
+Sur un terminal a l'exterieur de la vm
+$ scp -P 4242 level02@10.11.248.91:/home/user/level02/level02.pcap .
+
+Installer Wireshark (sur ma machine locale) :
+
+$ nix-shell -p wireshark
+
+Donner les droits au fichier et l’ouvrir avec Wireshark :
+
+$ chmod 777 level02.pcap  
+$ wireshark level02.pcap
+
+Exploitation
+Dans Wireshark, chercher les champs “Password”.
+
+→ On observe une tentative de connexion au login **level02** avec le mot de passe tapé au clavier.  
+On voit : `ft_wandr...NDRel.L0L` (l’utilisateur a tapé un mot de passe puis corrigé avec DEL).  
+
+En reconstituant :  
+Mot de passe = **ft_waNDReLOL**
+
