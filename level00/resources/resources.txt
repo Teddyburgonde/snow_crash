@@ -10,7 +10,7 @@ Groups:
 $groups
 level00 users
 
-→ L’ugroupstilisateur level00 appartient au groupe users.
+→ L’utilisateur level00 appartient au groupe users.
 
 Piste :
 Chercher les fichiers appartenant à l’utilisateur flag00 :

