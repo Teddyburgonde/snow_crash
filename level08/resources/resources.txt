@@ -1,0 +1,28 @@
+Definition:
+Un lien symbolique (symlink) est un fichier spécial qui pointe vers un autre fichier.  
+Il permet de donner un autre chemin d’accès à une ressource sans la copier.
+
+
+Piste:
+
+sur un terminal hors de la vm
+scp -P 4242 level08@10.11.248.91:/home/user/level08/level08 ~/Desktop/
+
+et on utilise dogbolt pour le decrypter.
+
+En copiant le binaire et en l’analysant (Dogbolt), on voit :  
+
+if (argc == 1) {
+    printf("%s [file to read]\n", *argv);
+    exit(1);
+}
+
+
+ln -s /home/user/level08/token /tmp/maflag
+./level08 /tmp/maflag
+
+su flag08
+quif5eloekouj29ke0vouxean
+
+getflag
+
