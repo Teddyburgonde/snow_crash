@@ -7,6 +7,11 @@ login: level00
 Password: level00
 ```
 
+se connecter sur un terminal exterieur
+```c
+ssh level00@10.11.248.91 -p 4242
+```
+
 pour passer a un autre level 
 ```c
 su levelxx

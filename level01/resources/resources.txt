@@ -1,0 +1,33 @@
+Definition:
+/etc/passwd = fichier qui contient la liste des utilisateurs du système et parfois leur hash de mot de passe.
+/etc/shadow = contient normalement les mots de passe chiffrés, mais ici (failles de conception) ils sont visibles dans /etc/passwd.
+
+Piste:
+Afficher le contenu de /etc/passwd :
+
+$ cat /etc/passwd
+
+→ On voit l’entrée suivante :
+flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
+
+Le deuxième champ "42hDRfypTqqnw" est le mot de passe chiffré de l’utilisateur flag01.
+
+Outil:
+Pour casser un mot de passe chiffré, on peut utiliser John the Ripper.
+
+Installation (sur ma machine locale) :
+
+$ sh <(curl -L https://nixos.org/nix/install)
+$ nix-shell -p john
+
+Exploitation:
+Sauvegarder le hash dans un fichier :
+
+$ echo "flag01:42hDRfypTqqnw" > hash.txt
+
+Lancer John sur le fichier :
+
+$ john hash.txt
+$ john --show hash.txt 
+
+→ John trouve le mot de passe en clair pour l’utilisateur flag01.

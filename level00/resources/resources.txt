@@ -1,0 +1,36 @@
+Definition:
+
+Un groupe = c'est un ensemble d'utilisateurs qui partagent les mêmes droits.
+Si un fichier appartient au groupe users, alors tous les utilisateurs du groupe users
+pourront y accéder selon les permissions.
+
+
+Groups:
+
+$groups
+level00 users
+
+→ L’ugroupstilisateur level00 appartient au groupe users.
+
+Piste :
+Chercher les fichiers appartenant à l’utilisateur flag00 :
+
+$ find / -user flag00 2>/dev/null
+
+Résultat :
+/usr/sbin/john
+/rofs/usr/sbin/john
+/tmp/xxx   (→ ignorés car /tmp est une poubelle temporaire)
+
+Analyse:
+Lire le fichier "john" :
+
+$ cat /usr/sbin/john
+cdiiddwpgswtgt
+
+Décrypter le contenu avec rot15 → on obtient le mot de passe du flag00.
+
+Entrer: 
+
+su flag00
+xxxxxxxxxxxxx
